@@ -91,9 +91,7 @@ public class FillDBScript
                             /**
                              *  Didn't manage to find normal regular expression to cut '?|' sequence
                              */
-                            //todo: checking if already exists
                             query = session.createQuery("from ClassifiersEntity");
-    //                            System.out.println("executing: " + query.getQueryString());
                             System.out.println("Pure : " + classifier);
                             String changedClassifier = classifier.contains("|") ? (classifier.substring(classifier.indexOf("|") + 1)) : classifier;
                             Pattern p = Pattern.compile("\\p{Punct}++|\\p{Punct}\\p{Space}++|\\p{Punct}\\p{Space}\\p{Punct}");
@@ -111,15 +109,11 @@ public class FillDBScript
                                         break;
                                     }
                                 }
-                                //                            System.out.println(contains);
                                 if(!contains)
                                 {
                                     ClassifiersEntity newClassifier = new ClassifiersEntity(changedClassifier);
-                                    //                                System.out.println("Checking classifier: id = " + newClassifier.getId());
                                     session.save(newClassifier);
                                     wordClassifiers.add(newClassifier);
-                                    //                                System.out.println("Checking classifier: id = " + newClassifier.getId());
-
                                 }
                             }
                         }

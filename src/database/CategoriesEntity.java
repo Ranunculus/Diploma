@@ -16,6 +16,13 @@ import javax.persistence.Id;
 public class CategoriesEntity {
     private int id;
 
+    public CategoriesEntity(String text) {
+        this.category = text;
+    }
+
+    public CategoriesEntity() {
+    }
+
     @javax.persistence.Column(name = "id")
     @Id
     public int getId() {
@@ -56,5 +63,13 @@ public class CategoriesEntity {
         int result = id;
         result = 31 * result + (category != null ? category.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoriesEntity{" +
+                "id=" + id +
+                ", category='" + category + '\'' +
+                '}';
     }
 }

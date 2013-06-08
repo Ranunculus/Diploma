@@ -1,9 +1,15 @@
+import database.WordsEntity;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.metadata.ClassMetadata;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,12 +21,13 @@ import java.awt.event.WindowEvent;
 public class DictionaryWindow extends JFrame
 {
     JPanel mainWindow = (JPanel) getContentPane();
-    FiltersCheckBoxTreePanel filterPanel = new FiltersCheckBoxTreePanel();
+    FiltersCheckBoxTreePanel filterPanel;
 
     JButton addWordButton = new JButton("Добавить слово");
-    public DictionaryWindow()
+    public DictionaryWindow(Session session)
     {
         super("Словарь");
+        filterPanel = new FiltersCheckBoxTreePanel(session);
 
         /**
          * Setting layout
@@ -30,12 +37,53 @@ public class DictionaryWindow extends JFrame
         mainWindow.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-
-
+        /**
+         * Configuring panels
+         */
         JLabel dictionaryLabel = new JLabel("Словарь");
         JLabel filterLabel = new JLabel("Фильтры");
+        Object[] columnNames = {"","","Слово", "Транскрипция", "Перевод", "Словарь", "Категория"};
 
-        Object[] columnNames = {"","","Слово", "Пиньинь", "Перевод", "Словарь", "Категория"};
+
+        ArrayList<WordsEntity> words = new ArrayList<WordsEntity>();
+
+//        try {
+                final ClassMetadata classMetadata = session.getSessionFactory().getClassMetadata(WordsEntity.class);
+                System.out.println(classMetadata.toString());
+                final String entityName = classMetadata.getEntityName();
+                final Query query = session.createQuery("from " + entityName);
+
+                if(entityName.equals("database.WordsEntity"))
+                {
+
+                    for (Object o : query.list()) {
+                        if(((WordsEntity)o).getLanguage().equals("Chinese"))
+                        {
+//                            System.out.println("  " + o.toString());
+                            words.add((WordsEntity)o);
+                        }
+                    }
+                }
+//
+//        } finally {
+//
+//            session.flush();
+//            session.close();
+//        }
+        Object[][] newData = new Object[words.size()][7];
+        int i = 0;
+        for(WordsEntity word : words)
+        {
+            newData[i][0] = false;
+            newData[i][1] = "";
+            newData[i][2] = word.getWord();
+            newData[i][3] = word.getPronunciation();
+            newData[i][4] = "Перевод";
+            newData[i][5] = word.getDictionaries().isEmpty() ? "" : word.getDictionaries().get(0).getName();
+            newData[i][6] = "";
+
+            i++;
+        }
         Object[][] data = {
                 {false,"","和", "huo3", "огонь","HSK 3","Стихия"},
                 {false,"","岁", "shuo", "вода", "HSK 2", "Стихия"},
@@ -54,8 +102,8 @@ public class DictionaryWindow extends JFrame
                 {false,"","向", "xiang4", "в направлении", "HSK 2", "Предлог"},
         };
 
-        DictionaryTableModel dictionaryTableModel = new DictionaryTableModel(data, columnNames);
-        DictionaryTable dictionaryTable = new DictionaryTable(dictionaryTableModel);
+        DictionaryTableModel dictionaryTableModel = new DictionaryTableModel(words, session);
+        DictionaryTable dictionaryTable = new DictionaryTable(dictionaryTableModel, session);
 
         JScrollPane scrollPane = new JScrollPane(dictionaryTable);
         scrollPane.createVerticalScrollBar();
@@ -64,8 +112,11 @@ public class DictionaryWindow extends JFrame
 
 
         mainWindow.add(scrollPane);
-
-//        filterPanel.setSize(new Dimension(500,600));
+        //following settings change only outer borders of panel
+        filterPanel.setSize(new Dimension(200,600));
+        filterPanel.setMaximumSize(new Dimension(200,600));
+        filterPanel.setMinimumSize(new Dimension(225,600));
+        filterPanel.setPreferredSize(new Dimension(225,600));
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()

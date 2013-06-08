@@ -1,3 +1,5 @@
+import org.hibernate.Session;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -18,12 +20,24 @@ public class CRUDCellRenderer extends AbstractCellEditor implements TableCellRen
 {
     JPanel panel = new JPanel();
 
-    public CRUDCellRenderer(final DictionaryTable dictionaryTable)
+    protected Session session;
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public CRUDCellRenderer(final DictionaryTable dictionaryTable, final Session session)
     {
         super();
+        this.session = session;
         panel.setLayout(new BorderLayout());
         JButton deleteButton = new JButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
+                System.out.println(dictionaryTable.getColumnName(2));
                 fireEditingStopped();
 
                 String[] options = {"Да", "Нет"};
@@ -60,9 +74,7 @@ public class CRUDCellRenderer extends AbstractCellEditor implements TableCellRen
         JButton updateButton = new JButton(new AbstractAction() {;
             public void actionPerformed(ActionEvent e) {
                 fireEditingStopped();
-                WordCardWindow dictionaryWindow = new WordCardWindow("Editing");
-                String[] filterNames = new String[]{"HSK 1", "HSK 2", "HSK 3", "HSK 4", "HSK 5", "HSK 6", "Кондрашевский", "Персональный"};
-                dictionaryWindow.setDictionaryNames(filterNames);
+                WordCardWindow dictionaryWindow = new WordCardWindow("Editing", ((DictionaryTableModel)dictionaryTable.getModel()).getWordAt(dictionaryTable.getSelectedRow()), session, (DictionaryTableModel)dictionaryTable.getModel());
                 dictionaryWindow.setMinimumSize(new Dimension(400, 300));
                 dictionaryWindow.setVisible(true);
                 fireEditingStopped();

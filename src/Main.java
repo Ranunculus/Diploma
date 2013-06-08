@@ -1,4 +1,3 @@
-import database.scripts.FillDBScript;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,9 +29,11 @@ public class Main {
     }
 
     public static void main(final String[] args) throws Exception {
-
-//        new MainWindow().setVisible(true);
-        new FillDBScript(getSession(), "/home/malyutik/Downloads/HSK_Level_6_(New_HSK).xls");
+        new MainWindow(getSession()).setVisible(true);
+//        AssociationsCategoryWindow associationsWindow = new AssociationsCategoryWindow(getSession());
+//        associationsWindow.setMinimumSize(new Dimension(900, 600));
+//        associationsWindow.setVisible(true);
+//        new FillDBScript(getSession(), "/home/malyutik/Downloads/HSK_Level_6_(New_HSK).xls");
 
 //        try {
 ////            System.out.println("querying all the managed entities...");
@@ -43,7 +44,7 @@ public class Main {
 ////                System.out.println(entityName);
 //                final Query query = session.createQuery("from " + entityName);
 //
-////                System.out.println(sheet0.getCell(3,95).getContents());
+////                 System.out.println(sheet0.getCell(3,95).getContents());
 ////                System.out.println(HSK1xls.getNumberOfSheets());
 ////                System.out.println("executing: " + query.getQueryString());
 ////                for (Object o : query.list()) {

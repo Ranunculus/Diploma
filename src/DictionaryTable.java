@@ -1,3 +1,5 @@
+import org.hibernate.Session;
+
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -14,10 +16,9 @@ public class DictionaryTable extends JTable
 {
     CRUDCellRenderer crudCellRenderer;
 
-    public DictionaryTable(DictionaryTableModel dictionaryTableModel)
+    public DictionaryTable(DictionaryTableModel dictionaryTableModel, Session session)
     {
         super(dictionaryTableModel);
-
         setFont(new Font("Arial", Font.PLAIN,12));//todo: 1t column AR PL UKai CN other - Arial
 
         getColumnModel().getColumn(0).setPreferredWidth(12);
@@ -27,7 +28,7 @@ public class DictionaryTable extends JTable
 
         setPreferredScrollableViewportSize(new Dimension(50, 50));
 
-        crudCellRenderer = new CRUDCellRenderer(this);
+        crudCellRenderer = new CRUDCellRenderer(this,session);
     }
 
     /**

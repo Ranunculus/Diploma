@@ -1,10 +1,13 @@
 package database;
 
+import org.hibernate.Session;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,8 +18,7 @@ import java.util.List;
  */
 @javax.persistence.Table(name = "Words", schema = "", catalog = "")
 @Entity
-public class WordsEntity implements Serializable {
-
+public class WordsEntity extends Vector implements Serializable {
 
     public WordsEntity(String word, String pronunciation, String language)
     {
@@ -42,6 +44,7 @@ public class WordsEntity implements Serializable {
         this.language = chinese;
         this.classifiers = wordClassifiers;
         this.dictionaries = wordDictionaries;
+        this.categories = new ArrayList<>();
     }
 
     @javax.persistence.Column(name = "id")
@@ -96,7 +99,7 @@ public class WordsEntity implements Serializable {
 
     protected List<ClassifiersEntity> classifiers;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(name = "Word_Classifier",
             joinColumns = @JoinColumn(name = "word_id"),
             inverseJoinColumns = @JoinColumn(name = "classifier_id"))
@@ -107,10 +110,23 @@ public class WordsEntity implements Serializable {
     public void setClassifiers(List<ClassifiersEntity> classifiers) {
         this.classifiers = classifiers;
     }
+    protected List<CategoriesEntity> categories;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinTable(name = "Word_Categories",
+            joinColumns = @JoinColumn(name = "word_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    public List<CategoriesEntity> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoriesEntity> categories) {
+        this.categories = categories;
+    }
 
     protected List<DictionariesEntity> dictionaries;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(name = "Word_Dictionary",
             joinColumns = @JoinColumn(name = "word_id"),
             inverseJoinColumns = @JoinColumn(name = "dictionary_id"))
@@ -121,6 +137,22 @@ public class WordsEntity implements Serializable {
     public void setDictionaries(List<DictionariesEntity> dictionaries) {
         this.dictionaries = dictionaries;
     }
+
+    protected String translation;
+
+    @Transient
+    public String getTranslation(Session session)
+    {
+        List chineseWord = session.createQuery("select word.id FROM WordsEntity word where word.id = " + getId()).list();
+        List link = session.createQuery("select word.word2Id FROM LinksEntity word where word.word1Id = " + chineseWord.get(0).toString()).list();
+        List englishWord = session.createQuery("select word.word FROM WordsEntity word where word.id = " + link.get(0).toString()).list();
+        return englishWord.get(0).toString();
+    }
+
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -150,10 +182,24 @@ public class WordsEntity implements Serializable {
     @Override
     public String toString() {
         return "WordsEntity{" +
-                ", id=" + id +
+                "id=" + id +
                 ", word='" + word + '\'' +
                 ", pronunciation='" + pronunciation + '\'' +
                 ", language='" + language + '\'' +
+                ", classifiers=" + classifiers +
+                ", categories=" + categories +
+                ", dictionaries=" + dictionaries +
+                ", translation='" + translation + '\'' +
                 '}';
+    }
+
+    public void addCategory(String category) {
+        if(this.categories == null){
+            this.categories = new ArrayList<>();
+            this.categories.add(new CategoriesEntity(category));
+        } else {
+            this.categories.add(new CategoriesEntity(category));
+        }
+        System.out.println("Categories = " + this.categories);
     }
 }

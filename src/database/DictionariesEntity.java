@@ -40,15 +40,29 @@ public class DictionariesEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        boolean value = false;
+        if (this == o)
+        {
+            value = true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            value =  false;
+        }
 
         DictionariesEntity that = (DictionariesEntity) o;
-
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-
-        return true;
+        System.out.println("Here");
+        if (id != that.id)
+        {
+            value = false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null)
+        {
+            value = false;
+        }
+        System.out.println(name + " <> " + that.name);
+        System.out.println(value);
+        return value;
     }
 
     @Override
@@ -56,5 +70,13 @@ public class DictionariesEntity {
         int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DictionariesEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

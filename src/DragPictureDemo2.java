@@ -63,17 +63,17 @@ public class DragPictureDemo2 extends JPanel {
     DTPicture pic1, pic2, pic3, pic4, pic5, pic6, pic7, pic8, pic9, pic10,
             pic11, pic12;
 
-    static String mayaString = "Maya";
+    static String mayaString = "accept";
 
-    static String anyaString = "Anya";
+    static String anyaString = "add";
 
-    static String laineString = "Laine";
+    static String laineString = "anchor";
 
-    static String cosmoString = "Cosmo";
+    static String cosmoString = "application";
 
-    static String adeleString = "Adele";
+    static String adeleString = "application_add";
 
-    static String alexiString = "Alexi";
+    static String alexiString = "application_cascade";
 
     PictureTransferHandler picHandler;
 
@@ -86,27 +86,27 @@ public class DragPictureDemo2 extends JPanel {
         DTPicture.setInstallInputMapBindings(false);
 
         JPanel mugshots = new JPanel(new GridLayout(4, 3));
-        pic1 = new DTPicture(createImageIcon("images/" + mayaString + ".jpg",
+        pic1 = new DTPicture(createImageIcon("icons/" + mayaString + ".png",
                 mayaString).getImage());
         pic1.setTransferHandler(picHandler);
         mugshots.add(pic1);
-        pic2 = new DTPicture(createImageIcon("images/" + anyaString + ".jpg",
+        pic2 = new DTPicture(createImageIcon("icons/" + anyaString + ".png",
                 anyaString).getImage());
         pic2.setTransferHandler(picHandler);
         mugshots.add(pic2);
-        pic3 = new DTPicture(createImageIcon("images/" + laineString + ".jpg",
+        pic3 = new DTPicture(createImageIcon("icons/" + laineString + ".png",
                 laineString).getImage());
         pic3.setTransferHandler(picHandler);
         mugshots.add(pic3);
-        pic4 = new DTPicture(createImageIcon("images/" + cosmoString + ".jpg",
+        pic4 = new DTPicture(createImageIcon("icons/" + cosmoString + ".png",
                 cosmoString).getImage());
         pic4.setTransferHandler(picHandler);
         mugshots.add(pic4);
-        pic5 = new DTPicture(createImageIcon("images/" + adeleString + ".jpg",
+        pic5 = new DTPicture(createImageIcon("icons/" + adeleString + ".png",
                 adeleString).getImage());
         pic5.setTransferHandler(picHandler);
         mugshots.add(pic5);
-        pic6 = new DTPicture(createImageIcon("images/" + alexiString + ".jpg",
+        pic6 = new DTPicture(createImageIcon("icons/" + alexiString + ".png",
                 alexiString).getImage());
         pic6.setTransferHandler(picHandler);
         mugshots.add(pic6);

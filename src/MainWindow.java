@@ -1,3 +1,5 @@
+import org.hibernate.Session;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,36 +17,52 @@ import java.awt.event.WindowEvent;
 public class MainWindow extends JFrame
 {
     JButton startWorkingWithDictionaryButton;
+    JButton startTranslatingSentencesButton;
+    JButton startWorkingWithAssociationsButton;
 
     JPanel mainWindow = (JPanel) getContentPane();
 
-    public MainWindow()
+    public MainWindow(final Session session)
     {
         super("Cистема изучения китайского языка");
 
         /**
          * Setting layout
          */
-        mainWindow.setLayout(new FlowLayout());
-        //todo: resize
+        mainWindow.setLayout(new BoxLayout(mainWindow, BoxLayout.LINE_AXIS));
+
         add(startWorkingWithDictionaryButton = new JButton("Работа со словарём"));
 
         startWorkingWithDictionaryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                DictionaryWindow dictionaryWindow = new DictionaryWindow();
+                DictionaryWindow dictionaryWindow = new DictionaryWindow(session);
                 dictionaryWindow.setMinimumSize(new Dimension(900, 600));
                 dictionaryWindow.setVisible(true);
             }
         });
 
-        addWindowListener(new WindowAdapter( ) {
+        add(startTranslatingSentencesButton = new JButton("Перевод предложений"));
+
+        add(startWorkingWithAssociationsButton = new JButton("Ассоциации"));
+
+        startWorkingWithAssociationsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                AssociationsCategoryWindow associationsWindow = new AssociationsCategoryWindow(session);
+                associationsWindow.setMinimumSize(new Dimension(900, 600));
+                associationsWindow.setVisible(true);
+            }
+        });
+        addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 setVisible(false);
-                dispose( );
+                dispose();
                 System.exit(0);
             }
         });
+
         pack();
 
 
